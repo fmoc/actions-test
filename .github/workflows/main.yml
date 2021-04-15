@@ -1,0 +1,30 @@
+name: Test Caching
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: cache/
+        key: ${{ runner.os }}-primes
+
+    - name: Cat file
+      run: |
+        mkdir -p cache
+        cat cache/file || true
+
+    - name: Generate file
+      #if: steps.cache-primes.outputs.cache-hit != 'true'
+      run: |
+        date > cache/file
+        echo "$GITHUB_RUN_ID" >> cache/file
+
+    - name: Cat file
+      run: cat cache/file
